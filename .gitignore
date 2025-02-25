@@ -1,0 +1,6 @@
+# Ignore data directory
+data/
+
+# Ignore results directory
+results/
+
