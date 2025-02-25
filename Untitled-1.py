@@ -16,8 +16,8 @@ from torch.autograd import grad
 from pathlib import Path
 import json
 import time
-# Force CPU usage
-device = torch.device("cpu")
+# Use GPU if available, otherwise use CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 # Adjusted hyperparameters for CPU training
