@@ -4,3 +4,6 @@ data/
 # Ignore results directory
 results/
 
+
+# Ignore logs directory
+logs/
