@@ -7,3 +7,6 @@ results/
 
 # Ignore logs directory
 logs/
+
+# Ignore shell script files
+*.sh
