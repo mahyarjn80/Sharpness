@@ -2,6 +2,7 @@ import numpy as np
 from torchvision.datasets import CIFAR10
 from typing import Tuple
 from torch.utils.data.dataset import TensorDataset
+from torchvision import transforms
 import os
 import torch
 from torch import Tensor
@@ -45,6 +46,30 @@ def load_cifar(loss: str) -> (TensorDataset, TensorDataset):
     standardized_X_train, standardized_X_test = standardize(center_X_train, center_X_test)
     train = TensorDataset(torch.from_numpy(unflatten(standardized_X_train, (32, 32, 3)).transpose((0, 3, 1, 2))).float(), y_train)
     test = TensorDataset(torch.from_numpy(unflatten(standardized_X_test, (32, 32, 3)).transpose((0, 3, 1, 2))).float(), y_test)
+    return train, test
+
+def load_cifar_vit(loss: str) -> (TensorDataset, TensorDataset):
+    # For ViT, we need to resize images to 224x224 and use standard normalization
+    
+    transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+
+    cifar10_train = CIFAR10(root=DATASETS_FOLDER, download=True, train=True, transform=transform)
+    cifar10_test = CIFAR10(root=DATASETS_FOLDER, download=True, train=False, transform=transform)
+
+    y_train = make_labels(torch.tensor(cifar10_train.targets), loss)
+    y_test = make_labels(torch.tensor(cifar10_test.targets), loss)
+
+    # Create datasets with transformed images and labels
+    train = TensorDataset(torch.stack([x for x, _ in cifar10_train]).float(), y_train)
+    test = TensorDataset(torch.stack([x for x, _ in cifar10_test]).float(), y_test)
+
+
+
     return train, test
 
 

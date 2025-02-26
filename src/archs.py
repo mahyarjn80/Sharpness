@@ -2,7 +2,13 @@ from typing import List
 
 import torch
 import torch.nn as nn
-
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+import numpy as np
+from torch.autograd import grad
 from resnet_cifar import resnet32
 from vgg import vgg11_nodropout, vgg11_nodropout_bn
 from data import num_classes, num_input_channels, image_size, num_pixels
@@ -176,3 +182,12 @@ def load_architecture(arch_id: str, dataset_name: str) -> nn.Module:
         return fully_connected_net(dataset_name, [200, 200, 200], 'tanh', bias=True)
     elif arch_id == 'fc-tanh-depth4':
         return fully_connected_net(dataset_name, [200, 200, 200, 200], 'tanh', bias=True)
+
+    elif arch_id == 'vit':
+        return torchvision.models.vit_b_16(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+    elif arch_id == 'vit-b-32':
+        return torchvision.models.vit_b_32(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+    elif arch_id == 'vit-l-16':
+        return torchvision.models.vit_l_16(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+    elif arch_id == 'vit-l-32':
+        return torchvision.models.vit_l_32(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)

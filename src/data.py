@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from typing import Tuple
 from torch.utils.data import TensorDataset
-from cifar import load_cifar
+from cifar import load_cifar, load_cifar_vit
 from synthetic import make_chebyshev_dataset, make_linear_dataset
 # from wikitext import load_wikitext_2
 
@@ -69,6 +69,23 @@ def load_dataset(dataset_name: str, loss: str) -> Tuple[TensorDataset, TensorDat
         return take_first(train, 10000), test  # Use only first 10000 training examples
     elif dataset_name == "cifar10-20k":
         train, test = load_cifar(loss)
+        return take_first(train, 20000), test  # Use only first 20000 training examples
+    elif dataset_name == "cifar10-vit":
+        return load_cifar_vit(loss)
+    elif dataset_name == "cifar10-vit-1k":
+        train, test = load_cifar_vit(loss)
+        return take_first(train, 1000), test  # Use only first 1000 training examples
+    elif dataset_name == "cifar10-vit-2k":
+        train, test = load_cifar_vit(loss)
+        return take_first(train, 2000), test  # Use only first 2000 training examples
+    elif dataset_name == "cifar10-vit-5k":
+        train, test = load_cifar_vit(loss)
+        return take_first(train, 5000), test  # Use only first 5000 training examples
+    elif dataset_name == "cifar10-vit-10k":
+        train, test = load_cifar_vit(loss)
+        return take_first(train, 10000), test 
+    elif dataset_name == "cifar10-vit-20k":
+        train, test = load_cifar_vit(loss)
         return take_first(train, 20000), test  # Use only first 20000 training examples
     elif dataset_name == "chebyshev-5-20":
         return make_chebyshev_dataset(k=5, n=20)
