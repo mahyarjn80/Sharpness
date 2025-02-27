@@ -53,7 +53,6 @@ def load_cifar_vit(loss: str) -> (TensorDataset, TensorDataset):
     
     # No need for ToPILImage since CIFAR10 dataset will return PIL images by default
     transform = transforms.Compose([
-            transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -61,13 +60,14 @@ def load_cifar_vit(loss: str) -> (TensorDataset, TensorDataset):
     cifar10_train = CIFAR10(root=DATASETS_FOLDER, download=True, train=True, transform=transform)
     cifar10_test = CIFAR10(root=DATASETS_FOLDER, download=True, train=False, transform=transform)
 
+
     y_train = make_labels(torch.tensor(cifar10_train.targets), loss)
     y_test = make_labels(torch.tensor(cifar10_test.targets), loss)
+
 
     # Create datasets with transformed images and labels
     train = TensorDataset(torch.stack([x for x, _ in cifar10_train]).float(), y_train)
     test = TensorDataset(torch.stack([x for x, _ in cifar10_test]).float(), y_test)
-
 
 
     return train, test

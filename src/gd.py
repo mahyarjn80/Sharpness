@@ -29,7 +29,7 @@ def main(dataset: str, arch_id: str, loss: str, opt: str, lr: float, max_steps: 
 
     torch.manual_seed(7)
     projectors = torch.randn(nproj, len(parameters_to_vector(network.parameters())))
-
+    print(f"num of params : {len(parameters_to_vector(network.parameters()))}")
     optimizer = get_gd_optimizer(network.parameters(), opt, lr, beta)
 
     train_loss, test_loss, train_acc, test_acc = \

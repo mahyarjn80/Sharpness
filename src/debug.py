@@ -15,10 +15,15 @@ transform = transforms.Compose([
 ])
 cifar10_train_transformed = datasets.CIFAR10(root=DATASETS_FOLDER, train=True, download=True, transform=transform)
 aa = torch.stack([x for x, _ in cifar10_train_transformed])
+
+
+
+
+
 # Check dimensions and data type of raw and transformed datasets
 # Raw dataset (without transform)
-print(aa.shape)
-sample_raw, _= cifar10_train_transformed[0] # Access first image and label tuple, get image
+# print(aa.shape)
+sample_raw= aa.tensors[0] # Access first image and label tuple, get image
 print(f"Raw CIFAR-10 train sample shape (without transform): {sample_raw.shape}")
 print(f"Total samples in raw dataset: {len(cifar10_train_raw)}")
 
