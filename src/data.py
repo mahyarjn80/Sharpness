@@ -8,7 +8,7 @@ from synthetic import make_chebyshev_dataset, make_linear_dataset
 
 DATASETS = [
     "cifar10", "cifar10-1k", "cifar10-2k", "cifar10-5k", "cifar10-10k", "cifar10-20k", "chebyshev-3-20",
-    "chebyshev-4-20", "chebyshev-5-20", "linear-50-50"
+    "chebyshev-4-20", "chebyshev-5-20", "linear-50-50", "cifar10-vit", "cifar10-vit-1k", "cifar10-vit-2k", "cifar10-vit-5k", "cifar10-vit-10k", "cifar10-vit-20k"
 ]
 
 def flatten(arr: np.ndarray):
