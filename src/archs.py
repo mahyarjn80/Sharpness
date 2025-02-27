@@ -184,10 +184,10 @@ def load_architecture(arch_id: str, dataset_name: str) -> nn.Module:
         return fully_connected_net(dataset_name, [200, 200, 200, 200], 'tanh', bias=True)
 
     elif arch_id == 'vit':
-        return torchvision.models.vit_b_16(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+        return torchvision.models.vit_b_16(pretrained=False, num_classes=num_classes(dataset_name), image_size=32)
     elif arch_id == 'vit-b-32':
-        return torchvision.models.vit_b_32(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+        return torchvision.models.vit_b_32(pretrained=False, num_classes=num_classes(dataset_name), image_size=32)
     elif arch_id == 'vit-l-16':
-        return torchvision.models.vit_l_16(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+        return torchvision.models.vit_l_16(pretrained=False, num_classes=num_classes(dataset_name), image_size=32)
     elif arch_id == 'vit-l-32':
-        return torchvision.models.vit_l_32(pretrained=False, num_classes=num_classes(dataset_name), image_size=224)
+        return torchvision.models.vit_l_32(pretrained=False, num_classes=num_classes(dataset_name), image_size=32)
