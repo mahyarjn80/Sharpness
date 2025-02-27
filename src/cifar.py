@@ -51,8 +51,8 @@ def load_cifar(loss: str) -> (TensorDataset, TensorDataset):
 def load_cifar_vit(loss: str) -> (TensorDataset, TensorDataset):
     # For ViT, we need to resize images to 224x224 and use standard normalization
     
+    # No need for ToPILImage since CIFAR10 dataset will return PIL images by default
     transform = transforms.Compose([
-            transforms.ToPILImage(),
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
