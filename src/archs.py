@@ -32,6 +32,8 @@ def get_activation(activation: str):
         return torch.nn.Softplus()
     elif activation == "sigmoid":
         return torch.nn.Sigmoid()
+    elif activation == "gelu":
+        return torch.nn.GELU()
     else:
         raise NotImplementedError("unknown activation function: {}".format(activation))
 
@@ -142,6 +144,8 @@ def load_architecture(arch_id: str, dataset_name: str) -> nn.Module:
         return convnet(dataset_name, [32, 32], activation='elu', pooling='max', bias=True)
     elif arch_id == 'cnn-tanh':
         return convnet(dataset_name, [32, 32], activation='tanh', pooling='max', bias=True)
+    elif arch_id == 'cnn-gelu':
+        return convnet(dataset_name, [32, 32], activation='gelu', pooling='max', bias=True)
     elif arch_id == 'cnn-avgpool-relu':
         return convnet(dataset_name, [32, 32], activation='relu', pooling='average', bias=True)
     elif arch_id == 'cnn-avgpool-elu':
