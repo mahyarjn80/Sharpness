@@ -10,6 +10,7 @@ from torch.optim import SGD
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import Dataset, DataLoader
 import os
+from muon_optimizer import MuonOptimizer
 
 # the default value for "physical batch size", which is the largest batch size that we try to put on the GPU
 DEFAULT_PHYS_BS = 1000
@@ -44,6 +45,8 @@ def get_gd_optimizer(parameters, opt: str, lr: float, momentum: float) -> Optimi
         return SGD(parameters, lr=lr, momentum=momentum, nesterov=False)
     elif opt == "nesterov":
         return SGD(parameters, lr=lr, momentum=momentum, nesterov=True)
+    elif opt == "muon":
+        return MuonOptimizer(parameters, lr=lr, momentum=momentum, nesterov=True)
 
 
 def save_files(directory: str, arrays: List[Tuple[str, torch.Tensor]]):
