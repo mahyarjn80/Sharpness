@@ -4,6 +4,8 @@ import torch
 from torch.nn.utils import parameters_to_vector
 
 import argparse
+import time
+from datetime import timedelta
 
 from archs import load_architecture
 from utilities import get_gd_optimizer, get_gd_directory, get_loss_and_acc, compute_losses, \
@@ -18,6 +20,10 @@ def main(dataset: str, arch_id: str, loss: str, opt: str, lr: float, max_steps: 
     directory = get_gd_directory(dataset, lr, arch_id, seed, opt, loss, beta)
     print(f"output directory: {directory}")
     makedirs(directory, exist_ok=True)
+
+    # Time tracking
+    start_time = time.time()
+    last_print_time = start_time
 
     train_dataset, test_dataset = load_dataset(dataset, loss)
     abridged_train = take_first(train_dataset, abridged_size)
@@ -42,6 +48,21 @@ def main(dataset: str, arch_id: str, loss: str, opt: str, lr: float, max_steps: 
                                                            physical_batch_size)
         test_loss[step], test_acc[step] = compute_losses(network, [loss_fn, acc_fn], test_dataset, physical_batch_size)
 
+        # Progress tracking (print every 10 seconds or at specified frequency)
+        current_time = time.time()
+        if current_time - last_print_time > 10 or step == 0 or step == max_steps - 1:
+            elapsed = current_time - start_time
+            progress = (step + 1) / max_steps
+            eta_seconds = (elapsed / (step + 1)) * (max_steps - step - 1) if step > 0 else 0
+            
+            print(f"[{step+1}/{max_steps}] {progress:.1%} | "
+                  f"Time: {str(timedelta(seconds=int(elapsed)))} | "
+                  f"ETA: {str(timedelta(seconds=int(eta_seconds)))} | "
+                  f"Loss: {train_loss[step]:.3f}/{test_loss[step]:.3f} | "
+                  f"Acc: {train_acc[step]:.3f}/{test_acc[step]:.3f}")
+            
+            last_print_time = current_time
+
         if eig_freq != -1 and step % eig_freq == 0:
             eigs[step // eig_freq, :] = get_hessian_eigenvalues(network, loss_fn, abridged_train, neigs=neigs,
                                                                 physical_batch_size=physical_batch_size)
@@ -55,9 +76,8 @@ def main(dataset: str, arch_id: str, loss: str, opt: str, lr: float, max_steps: 
                                    ("train_loss", train_loss[:step]), ("test_loss", test_loss[:step]),
                                    ("train_acc", train_acc[:step]), ("test_acc", test_acc[:step])])
 
-        print(f"{step}\t{train_loss[step]:.3f}\t{train_acc[step]:.3f}\t{test_loss[step]:.3f}\t{test_acc[step]:.3f}")
-
         if (loss_goal != None and train_loss[step] < loss_goal) or (acc_goal != None and train_acc[step] > acc_goal):
+            print(f"Goal reached at step {step+1}! Training complete.")
             break
 
         optimizer.zero_grad()
