@@ -106,12 +106,17 @@ class MuonOptimizer(torch.optim.Optimizer):
                     buf.lerp_(g, 1 - group["momentum"])
                     g = g.lerp_(buf, group["momentum"]) if group["nesterov"] else buf
                     
-                    # Handle multi-dimensional parameters
-                    if g.ndim == 4:  # For conv filters
-                        g = g.view(len(g), -1)
-                    
-                    # Apply Newton-Schulz iteration
-                    g = zeropower_via_newtonschulz5(g, steps=group["ns_steps"]).flatten()
+                    # Skip orthogonalization for parameters with fewer than 2 dimensions
+                    if g.ndim < 2:
+                        # Use the standard SGD update for these parameters
+                        update_buffer_views[0].copy_(g.flatten())
+                    else:
+                        # Apply orthogonalization for 2D+ parameters
+                        if g.ndim == 4:  # For conv filters
+                            g = g.view(len(g), -1)
+                        
+                        # Apply Newton-Schulz iteration
+                        g = zeropower_via_newtonschulz5(g, steps=group["ns_steps"]).flatten()
                 else:
                     g = update_buffer_views[self.rank]
                 
