@@ -88,8 +88,11 @@ class MuonOptimizer(torch.optim.Optimizer):
                     handle.wait()
                 for p_world, g_world in zip(params_world, update_buffer_views):
                     p_world.mul_(1 - group["lr"] * group["weight_decay"])
-                    p_world.add_(g_world.view_as(p_world),
-                                alpha=-group["lr"] * max(1, p_world.size(-2) / p_world.size(-1))**0.5)
+                    # Calculate scaling factor based on tensor dimensionality
+                    scaling = 1.0
+                    if p_world.ndim >= 2:
+                        scaling = max(1, p_world.size(-2) / p_world.size(-1))**0.5
+                    p_world.add_(g_world.view_as(p_world), alpha=-group["lr"] * scaling)
             
             # Process parameters in batches
             for base_i in range(len(params))[::self.world_size]:
