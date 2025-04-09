@@ -93,7 +93,6 @@ def main(dataset: str, arch_id: str, loss: str, opt: str,
             print(f"Goal reached at step {step+1}! Training complete.")
             break
 
-        optimizer
 
         optimizer.zero_grad()
         for (X, y) in iterate_dataset(train_dataset, physical_batch_size):
