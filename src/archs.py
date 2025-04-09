@@ -73,7 +73,7 @@ def convnet(dataset_name: str, widths: List[int], activation: str, pooling: str,
     modules = []
     size = image_size(dataset_name)
     for l in range(len(widths)):
-        prev_width = widths[l - 1] if l > 0 else (dataset_name)
+        prev_width = widths[l - 1] if l > 0 else num_input_channels(dataset_name)
         modules.extend([
             nn.Conv2d(prev_width, widths[l], bias=bias, **_CONV_OPTIONS),
             get_activation(activation),
